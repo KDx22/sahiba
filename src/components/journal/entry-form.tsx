@@ -77,16 +77,29 @@ export function EntryForm() {
           : sentimentResult.score < 0
           ? 'negative'
           : 'neutral';
+      
+      let affirmation = "A beautiful thought for a beautiful day.";
 
-      const previousAffirmations = previousEntries?.map(e => e.affirmation).filter(Boolean) ?? [];
+      try {
+        const previousAffirmations = previousEntries?.map(e => e.affirmation).filter(Boolean) ?? [];
+        const affirmationResponse = await generateAffirmation({
+          sentiment,
+          entryText: values.text,
+          previousAffirmations,
+        });
+        affirmation = affirmationResponse.affirmation;
+      } catch (aiError) {
+        console.error("AI affirmation generation failed. Using fallback.", aiError);
+        // Fallback affirmations based on sentiment
+        if (sentiment === 'positive') {
+          affirmation = "Your positivity is radiant! Keep shining.";
+        } else if (sentiment === 'negative') {
+          affirmation = "It's okay to have tough days. Be gentle with yourself.";
+        } else {
+          affirmation = "A moment of reflection is a moment of growth.";
+        }
+      }
 
-      const affirmationResponse = await generateAffirmation({
-        sentiment,
-        entryText: values.text,
-        previousAffirmations,
-      });
-
-      const affirmation = affirmationResponse.affirmation;
 
       const docRef = await addDocumentNonBlocking(collection(firestore, 'users', user.uid, 'diaryEntries'), {
         userId: user.uid,
