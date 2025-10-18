@@ -78,13 +78,8 @@ export function EntryForm() {
           ? 'negative'
           : 'neutral';
 
-      const previousAffirmations = previousEntries?.map(e => e.affirmation) || [];
-      const affirmationResponse = await generateAffirmation({ 
-        sentiment, 
-        entryText: values.text,
-        previousAffirmations,
-       });
-      const affirmation = affirmationResponse.affirmation;
+      // Use a simple placeholder instead of calling the failing AI function
+      const affirmation = "Every day is a new beginning.";
 
       const docRef = await addDocumentNonBlocking(collection(firestore, 'users', user.uid, 'diaryEntries'), {
         userId: user.uid,
@@ -102,6 +97,7 @@ export function EntryForm() {
       if (docRef) {
         router.push(`/entry/${docRef.id}`);
       } else {
+         // If for some reason docRef isn't returned, fallback gracefully
          router.push('/dashboard');
       }
 
