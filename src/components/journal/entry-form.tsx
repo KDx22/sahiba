@@ -78,8 +78,15 @@ export function EntryForm() {
           ? 'negative'
           : 'neutral';
 
-      // Use a simple placeholder instead of calling the failing AI function
-      const affirmation = "Every day is a new beginning.";
+      const previousAffirmations = previousEntries?.map(e => e.affirmation).filter(Boolean) ?? [];
+
+      const affirmationResponse = await generateAffirmation({
+        sentiment,
+        entryText: values.text,
+        previousAffirmations,
+      });
+
+      const affirmation = affirmationResponse.affirmation;
 
       const docRef = await addDocumentNonBlocking(collection(firestore, 'users', user.uid, 'diaryEntries'), {
         userId: user.uid,
