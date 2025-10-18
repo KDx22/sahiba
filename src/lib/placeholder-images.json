@@ -1,0 +1,16 @@
+{
+  "placeholderImages": [
+    {
+      "id": "auth-background",
+      "description": "Enchanted forest with glowing lanterns and fireflies",
+      "imageUrl": "https://storage.googleapis.com/aai-web-samples/emotiary-bg.jpg",
+      "imageHint": "enchanted forest"
+    },
+    {
+      "id": "app-background",
+      "description": "Enchanted forest with glowing lanterns and fireflies",
+      "imageUrl": "https://storage.googleapis.com/aai-web-samples/emotiary-bg.jpg",
+      "imageHint": "enchanted forest"
+    }
+  ]
+}

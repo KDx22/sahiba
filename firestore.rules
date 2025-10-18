@@ -1,0 +1,86 @@
+/**
+ * @description This ruleset enforces a strict user-ownership model for Emotiary.
+ * All data is nested under /users/{userId}, ensuring only the authenticated user can access their own data.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profile information.
+ * - /users/{userId}/diaryEntries/{diaryEntryId}: Stores diary entries for each user.
+ *
+ * Key Security Decisions:
+ * - Users can only create, read, update, and delete their own user document.
+ * - Users can only create, read, update, and delete their own diary entries.
+ * - Listing diary entries is restricted to the owner of the diary entries.
+ * - Data validation is relaxed in this prototype phase, focusing on authorization and relational integrity.
+ *
+ * Denormalization for Authorization:
+ * - The `userId` is present both in the path and within the DiaryEntry document itself. This allows for easy owner verification without additional reads.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Manages user profile data. Ensures only the user can access their own profile.
+     * @path /users/{userId}
+     * @allow (create) - Authenticated user creates their own profile with matching UID.
+     * @allow (get, update, delete) - Authenticated user accesses their own profile.
+     * @deny (create) - If the user attempts to create a profile with an ID that doesn't match their auth UID.
+     * @deny (list) - Listing users is not permitted.
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      // Read rules
+      allow get: if isOwner(userId);
+      allow list: if false;
+
+      // Write rules
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Manages diary entries for a specific user. Ensures only the user can access their own diary entries.
+     * @path /users/{userId}/diaryEntries/{diaryEntryId}
+     * @allow (create) - Authenticated user creates a diary entry under their user ID.
+     * @allow (get, list, update, delete) - Authenticated user accesses their own diary entries.
+     * @deny (create) - If the diary entry's userId does not match the authenticated user's ID.
+     * @deny (update, delete) - If the diary entry does not exist, or the user is not the owner.
+     * @principle Enforces document ownership for writes and restricts access to a user's own data tree.
+     */
+    match /users/{userId}/diaryEntries/{diaryEntryId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      // Read rules
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      // Write rules
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}

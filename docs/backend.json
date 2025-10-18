@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "DiaryEntry": {
+      "title": "DiaryEntry",
+      "type": "object",
+      "description": "Represents a diary entry with associated sentiment analysis and mood information.",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N DiaryEntry)"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp indicating when the entry was created.",
+          "format": "date-time"
+        },
+        "text": {
+          "type": "string",
+          "description": "The text content of the diary entry."
+        },
+        "sentiment": {
+          "type": "string",
+          "description": "The mood associated with the diary entry (e.g., positive, negative, neutral)."
+        },
+        "affirmation": {
+          "type": "string",
+          "description": "Comforting or cheerful quote displayed based on sentiment."
+        }
+      },
+      "required": [
+        "userId",
+        "timestamp",
+        "text",
+        "sentiment"
+      ]
+    },
+    "User": {
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the Emotiary application.",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Email address of the user.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "email"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information. The userId is used for path-based ownership."
+        }
+      },
+      {
+        "path": "/users/{userId}/diaryEntries/{diaryEntryId}",
+        "definition": {
+          "entityName": "DiaryEntry",
+          "schema": {
+            "$ref": "#/backend/entities/DiaryEntry"
+          },
+          "description": "Stores diary entries for each user. The userId is used for path-based ownership. Includes all the properties of the diary entry: id, userId, timestamp, text, sentiment, affirmation"
+        }
+      }
+    ]
+  }
+}

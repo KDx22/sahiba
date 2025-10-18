@@ -1,0 +1,26 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Build outputs
+/.next/
+/out/
+/build/
+
+# Firebase
+/.firebase/
+
+# Misc
+.DS_Store
+*.pem
+*.log
+
+# Environment variables
+.env
+.env*.local
+!/.env.example
+
+# Editor directories
+.vscode/
+.idea/

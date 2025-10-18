@@ -1,0 +1,148 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 257 50% 98%;
+    --foreground: 257 40% 10%;
+    --card: 257 50% 100%;
+    --card-foreground: 257 40% 10%;
+    --popover: 257 50% 100%;
+    --popover-foreground: 257 40% 10%;
+    --primary: 257 90% 65%;
+    --primary-foreground: 257 10% 98%;
+    --secondary: 257 50% 94%;
+    --secondary-foreground: 257 40% 10%;
+    --muted: 257 50% 94%;
+    --muted-foreground: 257 30% 55%;
+    --accent: 212 90% 55%;
+    --accent-foreground: 212 10% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 257 50% 90%;
+    --input: 257 50% 92%;
+    --ring: 257 90% 65%;
+  }
+  .dark {
+    --background: 260 25% 10%;
+    --foreground: 330 10% 85%;
+    --card: 260 20% 15%;
+    --card-foreground: 330 10% 85%;
+    --popover: 260 25% 10%;
+    --popover-foreground: 330 10% 85%;
+    --primary: 338 91% 65%;
+    --primary-foreground: 338 20% 98%;
+    --secondary: 260 20% 20%;
+    --secondary-foreground: 330 10% 85%;
+    --muted: 260 20% 20%;
+    --muted-foreground: 330 10% 55%;
+    --accent: 260 20% 25%;
+    --accent-foreground: 330 10% 90%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 338 91% 35%;
+    --input: 260 20% 20%;
+    --ring: 338 91% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  .bg-gradient-mood-default {
+    @apply bg-[length:200%_200%] bg-gradient-to-br from-purple-900/30 via-pink-900/30 to-rose-800/30;
+    animation: gradient-pan 15s ease infinite;
+  }
+  .bg-gradient-mood-positive {
+     @apply bg-[length:200%_200%] bg-gradient-to-br from-yellow-900/30 via-orange-900/30 to-amber-800/30;
+     animation: gradient-pan 15s ease infinite;
+  }
+  .bg-gradient-mood-negative {
+    @apply bg-[length:200%_200%] bg-gradient-to-br from-blue-900 via-slate-800 to-gray-900;
+    animation: gradient-pan 15s ease infinite;
+  }
+  .bg-gradient-mood-neutral {
+     @apply bg-[length:200%_200%] bg-gradient-to-br from-purple-900/30 via-pink-900/30 to-rose-800/30;
+     animation: gradient-pan 15s ease infinite;
+  }
+
+  .dark .bg-gradient-mood-default {
+    @apply bg-[length:200%_200%] bg-gradient-to-br from-purple-900/30 via-pink-900/30 to-rose-800/30;
+    animation: gradient-pan 15s ease infinite;
+  }
+  .dark .bg-gradient-mood-positive {
+     @apply bg-[length:200%_200%] bg-gradient-to-br from-yellow-900/30 via-orange-900/30 to-amber-800/30;
+     animation: gradient-pan 15s ease infinite;
+  }
+  .dark .bg-gradient-mood-negative {
+    @apply bg-[length:200%_200%] bg-gradient-to-br from-blue-900 via-slate-800 to-gray-900;
+    animation: gradient-pan 15s ease infinite;
+  }
+  .dark .bg-gradient-mood-neutral {
+     @apply bg-[length:200%_200%] bg-gradient-to-br from-purple-900/30 via-pink-900/30 to-rose-800/30;
+     animation: gradient-pan 15s ease infinite;
+  }
+
+  .raindrop {
+    position: absolute;
+    bottom: 100%;
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to top, rgba(0,0,0,0), rgba(0,0,0,0.2));
+    animation: fall linear infinite;
+  }
+  
+  .dark .raindrop {
+    background: linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,0.2));
+  }
+
+  @keyframes fall {
+    from { transform: translateY(0vh); }
+    to { transform: translateY(120vh); }
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: hsl(var(--primary) / 0.5);
+    border-radius: 50%;
+    box-shadow: 0 0 5px hsl(var(--primary) / 0.8), 0 0 10px hsl(var(--primary) / 0.8);
+    animation: float 5s ease-in-out infinite, twinkle 1.5s infinite alternate;
+    opacity: 0;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    25% { opacity: 1; }
+    50% { transform: translateY(-20px) translateX(10px); }
+    75% { opacity: 1; }
+    100% { transform: translateY(20px) translateX(-10px); opacity: 0; }
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+  }
+}
