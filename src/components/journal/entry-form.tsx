@@ -19,9 +19,9 @@ import { useRouter } from 'next/navigation';
 import { useUser, useFirestore, addDocumentNonBlocking, useCollection } from '@/firebase';
 import { collection, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
 import Sentiment from 'sentiment';
-import { generateAffirmation } from '@/ai/flows/generate-affirmations';
 import { MoodContext } from '@/app/(app)/layout';
-import { DiaryEntry } from '@/lib/types';
+import { DiaryEntry, type Sentiment as SentimentType } from '@/lib/types';
+import { generateAffirmation } from '@/ai/flows/generate-affirmations';
 
 const formSchema = z.object({
   text: z.string().min(10, { message: 'Your entry must be at least 10 characters long.' }),
@@ -71,20 +71,20 @@ export function EntryForm() {
     setIsLoading(true);
     try {
       const sentimentResult = sentimentAnalyzer.analyze(values.text);
-      const sentiment =
+      const sentiment: SentimentType =
         sentimentResult.score > 0
           ? 'positive'
           : sentimentResult.score < 0
           ? 'negative'
           : 'neutral';
 
-      const previousAffirmations = previousEntries?.map(e => e.affirmation).filter(Boolean) || [];
-
-      const { affirmation } = await generateAffirmation({
-        sentiment,
+      const previousAffirmations = previousEntries?.map(e => e.affirmation) || [];
+      const affirmationResponse = await generateAffirmation({ 
+        sentiment, 
         entryText: values.text,
         previousAffirmations,
-      });
+       });
+      const affirmation = affirmationResponse.affirmation;
 
       const docRef = await addDocumentNonBlocking(collection(firestore, 'users', user.uid, 'diaryEntries'), {
         userId: user.uid,
